@@ -1,10 +1,10 @@
 {
-  "name": "matrix-ui-plugin-boilerplate",
+  "name": "ui_plugin_risk_matrix",
   "version": "1.0.0",
-  "description": "Awesome matrix-ui-plugin-boilerplate created by francoischasseur",
+  "description": "Awesome ui_plugin_risk_matrix created by francoischasseur",
   "main": "index.js",
   "repository": {
-    "url": "https://github.com/MatrixRequirements/matrix-ui-plugin-boilerplate"
+    "url": "https://github.com/MatrixRequirements/ui_plugin_risk_matrix"
   },
   "scripts": {
     "build": "tsc -b",

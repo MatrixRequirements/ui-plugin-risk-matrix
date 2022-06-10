@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-namespace BoilerPlate{
+namespace UiPluginRiskMatrix{
 
    export class  Control extends BaseControl {
     
@@ -17,7 +17,7 @@ namespace BoilerPlate{
         
         init(  options:IControlOptions) {
             const defaultOptions:IControlOptions = {
-                placeholder: "matrix-ui-plugin-boilerplate",
+                placeholder: "ui_plugin_risk_matrix",
                 controlState: ControlState.FormView, // read only rendering
                 canEdit: false, // whether data can be edited 
                 dummyData: false, // fill control with a dumy text (for form design...)

@@ -5,27 +5,27 @@
 // This avoids conflicts with other plugins
 
 // eslint-disable-next-line no-unused-vars
-namespace BoilerPlate {
+namespace UiPluginRiskMatrix {
     
     export class Plugin implements IPlugin {
         public isDefault = true;
         currentFolder: IItem;
         popupModeOrControl: boolean;
-        public static fieldType = "matrix-ui-plugin-boilerplate";
+        public static fieldType = "ui_plugin_risk_matrix";
 
         static PLUGIN_NAME = "<PLUGIN_NAME_PLACEHOLDER>";
         static PLUGIN_VERSION = "<PLUGIN_VERSION_PLACEHOLDER>";
     
     
-        static settingName = "matrix-ui-plugin-boilerplate_settings";
+        static settingName = "ui_plugin_risk_matrix_settings";
 
         static defaultProjectSettings: IProjectSettings = {
-            content: "content for matrix-ui-plugin-boilerplate",
+            content: "content for ui_plugin_risk_matrix",
         }; 
 
 
         static defaultServerSettings: IServerSettings = {
-            content: "content for matrix-ui-plugin-boilerplate",
+            content: "content for ui_plugin_risk_matrix",
         };
 
         constructor() {
@@ -47,8 +47,8 @@ namespace BoilerPlate {
         }
 
         updateMenu(ul: JQuery, _hook: number) {
-            const li = $(`<li>matrix-ui-plugin-boilerplate</li>`).on("click",() => {
-                alert("Plugin matrix-ui-plugin-boilerplate");
+            const li = $(`<li>ui_plugin_risk_matrix</li>`).on("click",() => {
+                alert("Plugin ui_plugin_risk_matrix");
             });
 
             ul.append(li);
@@ -81,8 +81,8 @@ namespace BoilerPlate {
             const pbpi = ProjectSettingsPage();
             return [
                 {
-                    id: "BPP_customerSettings",
-                    title: "matrix-ui-plugin-boilerplate plugin project settings page",
+                    id: "UPRM_customerSettings",
+                    title: "ui_plugin_risk_matrix plugin project settings page",
                     render: (_ui: JQuery) => {
                         pbpi.renderSettingPage();
                     },
@@ -97,8 +97,8 @@ namespace BoilerPlate {
 
             return [
                 {
-                    id: "BPP_ProjectSettings",
-                    title: "matrix-ui-plugin-boilerplate  customer settings page",
+                    id: "UPRM_ProjectSettings",
+                    title: "ui_plugin_risk_matrix  customer settings page",
                     render: (_ui: JQuery) => {
                         pbpi.renderSettingPage();
                     },
@@ -112,8 +112,8 @@ namespace BoilerPlate {
         getProjectPages(): IProjectPageParam[] {
             const pages: IProjectPageParam[] = [];
             pages.push({
-                id: "BPP",
-                title: "matrix-ui-plugin-boilerplate  dashboard",
+                id: "UPRM",
+                title: "ui_plugin_risk_matrix  dashboard",
                 folder: "DASHBOARDS",
                 order: 7000,
                 icon: "fa fa-cog",
@@ -130,6 +130,6 @@ namespace BoilerPlate {
 
 // Register the plugin
 $(function () {
-    plugins.register(new BoilerPlate.Plugin());
+    plugins.register(new UiPluginRiskMatrix.Plugin());
 });
 

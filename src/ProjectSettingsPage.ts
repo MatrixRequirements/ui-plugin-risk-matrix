@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-namespace BoilerPlate {
+namespace UiPluginRiskMatrix {
     /* project Setting page closure*/
     export function ProjectSettingsPage():IPluginSettingPage <IProjectSettings>{
         let self: IPluginSettingPage<IProjectSettings> = {};

@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-namespace BoilerPlate {
+namespace UiPluginRiskMatrix {
     /* server Setting page closure*/
     export function ServerSettingsPage(): IPluginSettingPage<IServerSettings> {
         

@@ -1,6 +1,6 @@
 /* Setting interfaces */
 // eslint-disable-next-line no-unused-vars
-namespace BoilerPlate {
+namespace UiPluginRiskMatrix {
     export interface IProjectSettings {
         /** Setting page placeholder */
         content: string;
@@ -10,7 +10,7 @@ namespace BoilerPlate {
         /** Server Setting placeholder */
         content: string;
     }
-    export interface IPluginBoilerPlateFieldParameter extends IFieldParameter {
+    export interface IPluginUiPluginRiskMatrixFieldParameter extends IFieldParameter {
         /** field parameter placeholder*/
         fieldParameter: string;
     }
