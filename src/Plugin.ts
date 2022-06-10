@@ -29,7 +29,7 @@ namespace UiPluginRiskMatrix {
         };
 
         constructor() {
-            console.debug(`Contructing ${Plugin.PLUGIN_NAME}`);
+            console.debug(`Constructing ${Plugin.PLUGIN_NAME}`);
             
         }
 
