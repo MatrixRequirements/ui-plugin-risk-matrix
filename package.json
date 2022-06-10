@@ -1,0 +1,28 @@
+{
+  "name": "matrix-ui-plugin-boilerplate",
+  "version": "1.0.0",
+  "description": "Awesome matrix-ui-plugin-boilerplate created by francoischasseur",
+  "main": "index.js",
+  "repository": {
+    "url": "https://github.com/MatrixRequirements/matrix-ui-plugin-boilerplate"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "watch": "tsc -b --watch",
+    "pretty": "prettier --write src/",
+    "clean": "rm -rf dist",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint src --ext .ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jquery": "^3.5.5",
+    "@typescript-eslint/eslint-plugin": "^5.15.0",
+    "@typescript-eslint/parser": "^5.15.0",
+    "eslint": "^8.11.0",
+    "prettier": "^2.2.1",
+    "typescript": "^4.1.5"
+  }
+}
