@@ -112,7 +112,7 @@ namespace UiPluginRiskMatrix {
         getProjectPages(): IProjectPageParam[] {
             const pages: IProjectPageParam[] = [];
             pages.push({
-                id: "UPRM",
+                id: "RISK_TABLE",
                 title: "ui_plugin_risk_matrix  dashboard",
                 folder: "DASHBOARDS",
                 order: 7000,
