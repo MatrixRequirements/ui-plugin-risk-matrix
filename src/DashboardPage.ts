@@ -4,7 +4,7 @@ interface IRiskGraph {
     w2: string; // weight y axis
     ba: string, // before or after
     displayOptions: string  // option to render
-};
+}
 
 // item id -> risk value
 interface IStringRiskMap {[key:string]:RiskCalculator}
@@ -48,9 +48,9 @@ namespace UiPluginRiskMatrix {
     
         // ask for risk category if there's multiple
         private selectCategory(ui: JQuery) {
-            let that = this;
-            let riskCats = IC.getCategories(true).filter(category => IC.getFieldsOfType("risk2", category).length != 0);
-            let options: IRiskGraph = {
+            const that = this;
+            const riskCats = IC.getCategories(true).filter(category => IC.getFieldsOfType("risk2", category).length != 0);
+            const options: IRiskGraph = {
                 category: riskCats.length == 1 ? riskCats[0] : "",
                 w1: "",
                 w2: "",
@@ -69,20 +69,20 @@ namespace UiPluginRiskMatrix {
 
         // ask for graph configuration
         private selectProperties(options: IRiskGraph) {
-            let that = this;
+            const that = this;
 
             this.properties.html("");
             this.graph.html("");
             // get config
-            let field = IC.getFieldsOfType("risk2", options.category)[0].field;
+            const field = IC.getFieldsOfType("risk2", options.category)[0].field;
             let config = <IRiskConfig>field.parameterJson.riskConfig;
             if (!config) {
                 config = IC.getRiskConfig();
             }
             // get weights
-            let weights: IDropdownOption[] = [];
-            for (let factor of config.factors) {
-                for (let weight of factor.weights) {
+            const weights: IDropdownOption[] = [];
+            for (const factor of config.factors) {
+                for (const weight of factor.weights) {
                     weights.push({ id: weight.type, label: weight.type + " - " + weight.label });
                 }
             }
@@ -91,9 +91,9 @@ namespace UiPluginRiskMatrix {
                 return;
             }
             // before after
-            let beforeAfter = [{ id: "before", label: "before controls" }, { id: "after", label: "after controls" }];
+            const beforeAfter = [{ id: "before", label: "before controls" }, { id: "after", label: "after controls" }];
             // display options
-            let displayOptions = [{ id: "count", label: "number of items" }, { id: "ids", label: "list ids" }, { id: "idts", label: "list ids and title" }, { id: "text", label: "text" }, { id: "empty", label: "empty" }];
+            const displayOptions = [{ id: "count", label: "number of items" }, { id: "ids", label: "list ids" }, { id: "idts", label: "list ids and title" }, { id: "text", label: "text" }, { id: "empty", label: "empty" }];
 
             options.w1 = weights[0].id;
             options.w2 = weights[1].id,
@@ -118,17 +118,17 @@ namespace UiPluginRiskMatrix {
         private renderMatrices( options: IRiskGraph, config: IRiskConfig, search: ISearchResult[]) {
             this.graph.html("");
             
-            let heading = $("<h2>Risk Distribution</h2>").appendTo(this.graph);
-            let canvas = $("<div>").appendTo(this.graph);
+            const heading = $("<h2>Risk Distribution</h2>").appendTo(this.graph);
+            const canvas = $("<div>").appendTo(this.graph);
             ml.UI.copyBuffer(heading, "copy to clipboard", canvas, canvas);
             // build a list of permutations of values not on the axises
             let permutations:IRiskValueMap[] = [{}];
-            for (let factor of config.factors) {
-                for (let weight of factor.weights) {
+            for (const factor of config.factors) {
+                for (const weight of factor.weights) {
                     if (options.w1 != weight.type && options.w2 != weight.type) {
-                        let nextLevelPermutation :IRiskValueMap[] = [];
-                        for (let val of weight.values) {
-                            for (let permutation of permutations) {
+                        const nextLevelPermutation :IRiskValueMap[] = [];
+                        for (const val of weight.values) {
+                            for (const permutation of permutations) {
                                 permutation[weight.type]=val.factor;
                                 nextLevelPermutation.push( JSON.parse(JSON.stringify(permutation)));
                             }
@@ -138,7 +138,7 @@ namespace UiPluginRiskMatrix {
                 }
             }
 
-            for (let permutation of permutations) {
+            for (const permutation of permutations) {
                 this.renderMatrix(canvas, options, permutation, config, search);
             }
         }
@@ -148,15 +148,15 @@ namespace UiPluginRiskMatrix {
 
 
             // get risk objects
-            let risks:IStringRiskMap = this.getRisks( search, config);
+            const risks:IStringRiskMap = this.getRisks( search, config);
 
-            let riskCalculator = new RiskCalculator(config);
+            const riskCalculator = new RiskCalculator(config);
             riskCalculator.parse("");
-            let baseRisk = riskCalculator.getValue();
+            const baseRisk = riskCalculator.getValue();
 
             // set other values (not on axis if there's more than two axis) 
-            let otherExplanation =$("<div>");
-            for ( let wv of Object.keys( permutation)) {
+            const otherExplanation =$("<div>");
+            for ( const wv of Object.keys( permutation)) {
                 this.setDummyRisk( baseRisk, wv, Number( permutation[wv]));
                 if (wv != options.w1 && wv != options.w2) {
                     otherExplanation.append( `<div>${this.getWeightLabel( wv, config)}: ${ permutation[wv]} - ${ this.getWeightText( wv, permutation[wv], config)} </div>`)
@@ -166,8 +166,8 @@ namespace UiPluginRiskMatrix {
             // get the definitions of the two axis to be able to enumerate over values
             let xAxis: IRiskConfigFactorWeight;
             let yAxis: IRiskConfigFactorWeight;
-            for (let factor of config.factors) {
-                for (let weight of factor.weights) {
+            for (const factor of config.factors) {
+                for (const weight of factor.weights) {
                     if (options.w1 == weight.type) {
                         xAxis = weight;
                     }
@@ -180,26 +180,26 @@ namespace UiPluginRiskMatrix {
             canvas.append(otherExplanation);
             let table = `<table class="table table-bordered">`;
             table += `<thead><tr><th rowspan=2>${yAxis.label}</th><th colspan=${xAxis.values.length}>${xAxis.label}</th></tr><tr>`;
-            for (let x of xAxis.values) {
+            for (const x of xAxis.values) {
                 table += `<th>${x.factor} ${x.shortname}</th>`;
             }
             table += `<tr></thead>`;
             // counts
             table += `</tbody>`;
-            for (let y of yAxis.values) {
+            for (const y of yAxis.values) {
                 table += `<tr><td><b>${y.factor} ${y.shortname}</b></td>`;
                 this.setDummyRisk(baseRisk, yAxis.type, y.factor);
-                for (let x of xAxis.values) {
+                for (const x of xAxis.values) {
                     this.setDummyRisk(baseRisk, xAxis.type, x.factor);
                     riskCalculator.init(baseRisk);
 
-                    let color = riskCalculator.getAttributeHTML("colorbeforebackground");
+                    const color = riskCalculator.getAttributeHTML("colorbeforebackground");
                     let text = "";
                     
                     if ( options.displayOptions == "text" ) {
                         text = $(riskCalculator.getAttributeHTML(options.ba=="before"?"totalrbm":"totalram")).text();
                     } else if (  options.displayOptions != "empty" ) {
-                        let risksInCell = this.getFilteredRisks( risks, baseRisk, options);
+                        const risksInCell = this.getFilteredRisks( risks, baseRisk, options);
                         
                         if (  options.displayOptions == "count" ) {
                             text = ""+risksInCell.length;
@@ -220,8 +220,8 @@ namespace UiPluginRiskMatrix {
         }
 
         private getWeightLabel( id:string, config:IRiskConfig) {
-            for (let factor of config.factors) {
-                for (let weight of factor.weights) {
+            for (const factor of config.factors) {
+                for (const weight of factor.weights) {
                     if (id == weight.type) {
                         return weight.label;
                     }
@@ -231,10 +231,10 @@ namespace UiPluginRiskMatrix {
         }
         
         private getWeightText( id:string, val:Number, config:IRiskConfig) {
-            for (let factor of config.factors) {
-                for (let weight of factor.weights) {
+            for (const factor of config.factors) {
+                for (const weight of factor.weights) {
                     if (id == weight.type) {
-                        for (let vals of weight.values) {
+                        for (const vals of weight.values) {
                             if ( vals.factor == val) {
                                 return weight.label;
                             }
@@ -247,8 +247,8 @@ namespace UiPluginRiskMatrix {
         
         // create a dummy risk which has some given values
         private setDummyRisk(baseRisk: IRiskValue, weightType: string, weightValue: number) {
-            for (let factor of baseRisk.factors) {
-                for (let weight of factor.weights) {
+            for (const factor of baseRisk.factors) {
+                for (const weight of factor.weights) {
                     if (weight.type == weightType) {
                         weight.value = weightValue;
                     }
@@ -260,15 +260,15 @@ namespace UiPluginRiskMatrix {
         private getRisks( search:ISearchResult[] , config:IRiskConfig) {
             // get all possible mitigations
             let mitigations:IReference[]=[]; 
-            for (let mit of config.mitigationTypes) {
-                let itemsInCat = app.getChildrenIdsRec( "F-" + mit.type + "-1").map( (id) => {return { to:id, title:""}});
+            for (const mit of config.mitigationTypes) {
+                const itemsInCat = app.getChildrenIdsRec( "F-" + mit.type + "-1").map( (id) => {return { to:id, title:""}});
                 mitigations = mitigations.concat( itemsInCat );
             }
 
-            let riskValues:IStringRiskMap = {}
+            const riskValues:IStringRiskMap = {}
             
-            for (let s of search) {
-                let rc = new RiskCalculator(config);
+            for (const s of search) {
+                const rc = new RiskCalculator(config);
                 rc.parse( s.fieldVal[0].value );
                 rc.updateMitigations( mitigations );
                 riskValues[s.itemId] = rc;
@@ -279,14 +279,14 @@ namespace UiPluginRiskMatrix {
         // get risks with given weights
 
         private getFilteredRisks( risks:IStringRiskMap, baseRisk:IRiskValue, options:IRiskGraph) {
-            let ids = [];
+            const ids = [];
         
-            for (let riskItem of Object.keys( risks)) {
+            for (const riskItem of Object.keys( risks)) {
                 let selected = true;
-                let rc = risks[riskItem];
-                let values = options.ba=="before"?rc.getRBM():rc.getRAM(rc.getRBM());
-                for (let factor of baseRisk.factors) {
-                    for (let weight of factor.weights) {
+                const rc = risks[riskItem];
+                const values = options.ba=="before"?rc.getRBM():rc.getRAM(rc.getRBM());
+                for (const factor of baseRisk.factors) {
+                    for (const weight of factor.weights) {
                         if ( values[weight.type] != weight.value ) {
                             selected = false;
                         }
