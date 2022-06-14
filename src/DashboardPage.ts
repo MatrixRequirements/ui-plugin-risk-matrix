@@ -230,7 +230,7 @@ namespace UiPluginRiskMatrix {
             return id;
         }
         
-        private getWeightText( id:string, val:Number, config:IRiskConfig) {
+        private getWeightText( id:string, val:number, config:IRiskConfig) {
             for (const factor of config.factors) {
                 for (const weight of factor.weights) {
                     if (id == weight.type) {
