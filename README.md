@@ -2,7 +2,7 @@
 
 This plugin renders a risk distribution matrix
 
-[Example Matrix](docs/example_matrix.png)
+![Example Risk distribution matrix](docs/example_matrix.png?raw=true "2 axis of matrix")
 
 Matrix UI Plugins are implementations of the IPlugin interface.
 They can be registered in the plugin manager at startup and will be queried
