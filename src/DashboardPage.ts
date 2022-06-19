@@ -176,8 +176,8 @@ namespace UiPluginRiskMatrix {
                     }
                 }
             }
-            console.log( xAxis  );
-            console.log( yAxis  );
+            //console.log( xAxis  );
+            //console.log( yAxis  );
             
             // header row -> x axis
             canvas.append(otherExplanation);
@@ -194,6 +194,7 @@ namespace UiPluginRiskMatrix {
                 this.setDummyRisk(baseRisk, yAxis.type, y.factor);
                 for (const x of xAxis.values) {
                     this.setDummyRisk(baseRisk, xAxis.type, x.factor);
+                    console.log( baseRisk );
                     riskCalculator.init(baseRisk);
 
                     const color = riskCalculator.getAttributeHTML("colorbeforebackground");
