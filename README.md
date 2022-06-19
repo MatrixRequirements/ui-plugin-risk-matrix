@@ -4,36 +4,29 @@ This plugin renders a risk distribution matrix
 
 ![Example Risk distribution matrix](docs/example_matrix.png?raw=true "2 axis of matrix")
 
-Matrix UI Plugins are implementations of the IPlugin interface.
-They can be registered in the plugin manager at startup and will be queried
-in different situations, for example to add new UI Controls or entries to 
-the tree or pages in the adminConfig.
-
-This  example registers a new Dashboard, a control, an action in the action menu, a config page on the project level and a config page at the serverSetting level. You can use this project as template for other plugin. 
-
-It can be compiled using the standard
-Typescript build process into a single JS file and loaded into Matrix.
+**Requires 2.3.3 (later releases untested)**
 
 
-## Installation
-To simplify installation without requiring disk access to a Matrix instance
-you can use a special developer setup and a GitHub action to build the code.
+## Description
 
-* Use this project as template
-* Go to the CI action and start the workflow "rename the project from template" 
-* Modify the code and check it into GitHub
-* Make sure the build succeeds (look under Actions)
-* Login into the [developer instance](https://developer.matrixreq.net)
-* Create a new UI entry in the 
-  [PLUGINS project](https://developer.matrixreq.net/PLUGINS/F-UI-2)
-* Press the Deploy button
-* Reload the browser
+The plugin creates a dashboard which can render information about the risks in the project.
 
-This should install the script on the server and load it into the browser. The
-naming reflects the repository name, for example `https://developer.matrixreq.net/static/js/GitHub-MatrixRequirements_boiler-plate.js`
+If there are multiple risk categories the user needs to select one category at a time. 
+For the category selected the plugin shows 2d matrices (with the selected x and y axis) showing different combinations of probabilities and severities.
+Inside each matrix it shows either,
+* the number of risks in before or after risk controls
+* the ids of risks before or after risk controls
+* just the colors or ris priority number 
 
-## APIs
-Matrix has a very large set of APIs which you can explore in the interface definitions
-in the lib directory. To simplify the start there are some wrappers around common 
-calls in the src/api directory. The intention is to make these a smaller but better
-documented set of often used APIs. Let us know if you're missing something!
+If there are more than two dimensions it iterates over the values, showing multiple matrices (one for each permutation).
+
+The dashboard can be copied and pasted into a document.
+
+## Code shows
+
+* how to make a project dashboard
+* find risk categories
+* how to get the risk configuration for a category
+* get all the items of a category
+* compute the risk before and after risk controls of a risk
+* make a dashboard which can be copied and pasted into a DOC'S richtext box
