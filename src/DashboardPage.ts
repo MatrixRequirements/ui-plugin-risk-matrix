@@ -176,6 +176,9 @@ namespace UiPluginRiskMatrix {
                     }
                 }
             }
+            console.log( xAxis  );
+            console.log( yAxis  );
+            
             // header row -> x axis
             canvas.append(otherExplanation);
             let table = `<table class="table table-bordered">`;
