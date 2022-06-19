@@ -1,6 +1,8 @@
 # Example Dashboard - show risk distribution matrices
 
-![Plugin Build](https://github.com/MatrixRequirements/ui_plugin_risk_matrix/actions/workflows/main.yml/badge.svg)
+This plugin renders a risk distribution matrix
+
+[Example Matrix](docs/example_matrix.png)
 
 Matrix UI Plugins are implementations of the IPlugin interface.
 They can be registered in the plugin manager at startup and will be queried
