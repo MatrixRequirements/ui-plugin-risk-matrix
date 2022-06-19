@@ -1,4 +1,4 @@
-# ui_plugin_risk_matrix plugin
+# Example Dashboard - show risk distribution matrices
 
 ![Plugin Build](https://github.com/MatrixRequirements/ui_plugin_risk_matrix/actions/workflows/main.yml/badge.svg)
 

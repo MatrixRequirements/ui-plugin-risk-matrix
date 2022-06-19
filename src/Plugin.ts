@@ -20,12 +20,12 @@ namespace UiPluginRiskMatrix {
         static settingName = "ui_plugin_risk_matrix_settings";
 
         static defaultProjectSettings: IProjectSettings = {
-            content: "content for ui_plugin_risk_matrix",
+            content: "defaultProjectSettings for ui_plugin_risk_matrix",
         }; 
 
 
         static defaultServerSettings: IServerSettings = {
-            content: "content for ui_plugin_risk_matrix",
+            content: "defaultServerSettings for ui_plugin_risk_matrix",
         };
 
         constructor() {
