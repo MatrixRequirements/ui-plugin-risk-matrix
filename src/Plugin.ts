@@ -33,7 +33,7 @@ namespace UiPluginRiskMatrix {
         }
 
         updateMenu(ul: JQuery, _hook: number) {
-            
+            // for lint
         }
         supportsControl(fieldType: string): boolean {
             return false;

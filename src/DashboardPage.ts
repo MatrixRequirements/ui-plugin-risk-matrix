@@ -16,6 +16,7 @@ namespace UiPluginRiskMatrix {
         private graph:JQuery;
 
         constructor() {
+            // left empty for lint
         }
 
         getDashboardDOM(): JQuery {
