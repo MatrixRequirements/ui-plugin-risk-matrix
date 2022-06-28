@@ -12,12 +12,10 @@ interface IStringRiskMap {[key:string]:RiskCalculator}
 // eslint-disable-next-line no-unused-vars
 namespace UiPluginRiskMatrix {
     export class DashboardPage {
-        settings: IProjectSettings;
         private properties:JQuery;
         private graph:JQuery;
 
         constructor() {
-            this.settings = { ...Plugin.defaultProjectSettings, ...IC.getSettingJSON(Plugin.settingName, {}) } ;
         }
 
         getDashboardDOM(): JQuery {
@@ -29,7 +27,7 @@ namespace UiPluginRiskMatrix {
             const control = this.getDashboardDOM();
             app.itemForm.append(
                 ml.UI.getPageTitle(
-                    this.settings.content,
+                    "Risk Matrices",
                     () => {
                         return control;
                     },
