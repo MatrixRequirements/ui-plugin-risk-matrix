@@ -11,26 +11,12 @@ namespace UiPluginRiskMatrix {
         public isDefault = true;
         currentFolder: IItem;
         popupModeOrControl: boolean;
-        public static fieldType = "ui_plugin_risk_matrix";
 
         static PLUGIN_NAME = "<PLUGIN_NAME_PLACEHOLDER>";
         static PLUGIN_VERSION = "<PLUGIN_VERSION_PLACEHOLDER>";
-    
-    
-        static settingName = "ui_plugin_risk_matrix_settings";
-
-        static defaultProjectSettings: IProjectSettings = {
-            content: "defaultProjectSettings for ui_plugin_risk_matrix",
-        }; 
-
-
-        static defaultServerSettings: IServerSettings = {
-            content: "defaultServerSettings for ui_plugin_risk_matrix",
-        };
 
         constructor() {
             console.debug(`Constructing ${Plugin.PLUGIN_NAME}`);
-            
         }
 
         initItem(_item: IItem, _jui: JQuery) {
@@ -47,25 +33,17 @@ namespace UiPluginRiskMatrix {
         }
 
         updateMenu(ul: JQuery, _hook: number) {
-            const li = $(`<li>ui_plugin_risk_matrix</li>`).on("click",() => {
-                alert("Plugin ui_plugin_risk_matrix");
-            });
-
-            ul.append(li);
+            
         }
         supportsControl(fieldType: string): boolean {
-            return fieldType == Plugin.fieldType;
+            return false;
         }
         createControl(ctrlObj: JQuery, settings: IBaseControlOptions) {
-            if (settings && settings.fieldType == Plugin.fieldType) {
-                const baseControl = new Control(ctrlObj);
-                ctrlObj.getController = () => { return baseControl; }
-                baseControl.init(<IControlOptions> settings);
-            }
+            /* should never be called */
         }
 
         getFieldConfigOptions():IFieldDescription[] {
-            return [{id:Plugin.fieldType, capabilities:{canBePublished:false,canBeReadonly:true,canBeXtcPreset:false,canHideInDoc:false,canBeUsedInDocs:false,canRequireContent:true}, class:"",help:"",label:Plugin.PLUGIN_NAME }];
+            return [];
         }
         isEnabled() {
             return true;
@@ -78,42 +56,22 @@ namespace UiPluginRiskMatrix {
             return Plugin.PLUGIN_VERSION;
         }
         getProjectSettingPages(): ISettingPage[] {
-            const pbpi = ProjectSettingsPage();
-            return [
-                {
-                    id: "UPRM_customerSettings",
-                    title: "ui_plugin_risk_matrix plugin project settings page",
-                    render: (_ui: JQuery) => {
-                        pbpi.renderSettingPage();
-                    },
-                    saveAsync: () => {
-                        return pbpi.saveAsync()
-                    }
-                },
+             return [
+               
             ];
         }
         getCustomerSettingPages(): ISettingPage[] {
-            const pbpi = ServerSettingsPage();
-
+           
             return [
-                {
-                    id: "UPRM_ProjectSettings",
-                    title: "ui_plugin_risk_matrix  customer settings page",
-                    render: (_ui: JQuery) => {
-                        pbpi.renderSettingPage();
-                    },
-                    saveAsync: () => {
-                        return pbpi.saveAsync()
-                    }
-                },
+               
             ];
         }
 
         getProjectPages(): IProjectPageParam[] {
             const pages: IProjectPageParam[] = [];
             pages.push({
-                id: "RISK_TABLE",
-                title: "ui_plugin_risk_matrix  dashboard",
+                id: "RISK_MATRIX",
+                title: "risk distribution matrices",
                 folder: "DASHBOARDS",
                 order: 7000,
                 icon: "fa fa-cog",
