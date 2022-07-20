@@ -189,20 +189,20 @@ namespace UiPluginRiskMatrix {
 
         private getLookupZone( riskValues:IRiskValueMap, config:IRiskConfig) {
         
-            for ( let rpn of config.rpns) {
+            for ( const rpn of config.rpns) {
                 let hit = true;
-                for( let factor of config.factors) {
-                    for (let weight of factor.weights) {
+                for( const factor of config.factors) {
+                    for (const weight of factor.weights) {
                         // compare number to string
                         if ( riskValues[weight.type] != rpn[weight.type]) {
                             hit = false;
                         }
-                    };
-                };
+                    }
+                }
                 if (hit) {
                     return rpn.zone;
                 }
-            };
+            }
             return "";
         }
     }
