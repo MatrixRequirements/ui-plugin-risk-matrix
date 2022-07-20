@@ -156,7 +156,7 @@ namespace UiPluginRiskMatrix {
             if (app.getVersion().indexOf("2.3.")==0) {
                 // this is done automatically in 2.4
                 for (const factor of config.factors) {
-                    let newFactor = { type: factor.type, weights: [], label: "", value: "" };
+                    const newFactor = { type: factor.type, weights: [], label: "", value: "" };
                     baseRisk.factors.push(newFactor);
                     for (const weight of factor.weights) {
                         newFactor.weights.push({ type: weight.type, value: weight.values[0].factor, description: "", label: "" });
