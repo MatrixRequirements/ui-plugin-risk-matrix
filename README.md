@@ -22,6 +22,8 @@ If there are more than two dimensions it iterates over the values, showing multi
 
 The dashboard can be copied and pasted into a document.
 
+There is also a risk distribution matrix by risk zone in another dashboard
+
 ## Code shows
 
 * how to make a project dashboard
