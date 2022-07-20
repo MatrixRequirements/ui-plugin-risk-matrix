@@ -77,9 +77,21 @@ namespace UiPluginRiskMatrix {
                 icon: "fa fa-cog",
                 usesFilters: true,
                 render: (_options: IPluginPanelOptions) => {
-                    const gd = new DashboardPage();
+                    const gd = new RiskGraphPage();
                     gd.renderProjectPage();
-                },
+                }
+            });
+            pages.push({
+                id: "RISK_STATS",
+                title: "risk distribution stats",
+                folder: "DASHBOARDS",
+                order: 7000,
+                icon: "fa fa-cog",
+                usesFilters: true,
+                render: (_options: IPluginPanelOptions) => {
+                    const gd = new RiskCountsPage();
+                    gd.renderProjectPage();
+                }
             });
             return pages;
         }

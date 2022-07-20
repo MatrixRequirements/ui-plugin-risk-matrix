@@ -11,7 +11,7 @@ interface IStringRiskMap {[key:string]:RiskCalculator}
 
 // eslint-disable-next-line no-unused-vars
 namespace UiPluginRiskMatrix {
-    export class DashboardPage {
+    export class RiskGraphPage {
         private properties:JQuery;
         private graph:JQuery;
 
@@ -92,7 +92,7 @@ namespace UiPluginRiskMatrix {
             // before after
             const beforeAfter = [{ id: "before", label: "before controls" }, { id: "after", label: "after controls" }];
             // display options
-            const displayOptions = [{ id: "count", label: "number of items" }, { id: "ids", label: "list ids" }, { id: "idts", label: "list ids and title" }, { id: "text", label: "text" }, { id: "empty", label: "empty" }];
+            const displayOptions = [{ id: "count", label: "number of items" }, { id: "ids", label: "list ids" }, { id: "idsc", label: "list ids (compact)" }, { id: "idts", label: "list ids and title" }, { id: "text", label: "text" }, { id: "empty", label: "empty" }];
 
             options.w1 = weights[0].id;
             options.w2 = weights[1].id,
@@ -185,7 +185,7 @@ namespace UiPluginRiskMatrix {
             for (const x of xAxis.values) {
                 table += `<th>${x.factor} ${x.shortname}</th>`;
             }
-            table += `<tr></thead>`;
+            table += `</tr></thead>`;
             // counts
             table += `</tbody>`;
             for (const y of yAxis.values) {
@@ -208,6 +208,8 @@ namespace UiPluginRiskMatrix {
                             text = ""+risksInCell.length;
                         } else if ( options.displayOptions == "ids" ) {
                             text = risksInCell.map( id => `<div>${id}</div>`).join("");
+                        } else if ( options.displayOptions == "idsc" ) {
+                            text = risksInCell.map( id => `<span>${id}</span>`).join(", ");
                         } else if ( options.displayOptions == "idts" ) {
                             text = risksInCell.map( id => `<div>${id}!</div>`).join("");
                         }
