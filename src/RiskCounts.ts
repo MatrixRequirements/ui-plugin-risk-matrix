@@ -46,7 +46,7 @@ namespace UiPluginRiskMatrix {
         }
     
         private async renderDashboard( options:IRiskCounter) {
-            let res = $.Deferred();
+            const res = $.Deferred();
             this.graph = $("<div>");
             this.createStats(options).done ( () => {
                 res.resolve(this.graph[0].outerHTML);
@@ -73,7 +73,7 @@ namespace UiPluginRiskMatrix {
 
         // ask for graph configuration
         private createStats(options: IRiskCounter) {
-            let res = $.Deferred();
+            const res = $.Deferred();
             const that = this;
 
             this.graph.html("");
