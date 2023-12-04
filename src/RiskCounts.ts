@@ -1,11 +1,14 @@
 interface IRiskCounter {
+    pageId:string,
     category:string
+}
+interface IRiskCounterPluginPanelOptions  extends IPluginPanelOptions {
+    render:IRiskCounter
 }
 
 // eslint-disable-next-line no-unused-vars
 namespace UiPluginRiskMatrix {
     export class RiskCountsPage {
-        private properties:JQuery;
         private graph:JQuery;
 
         constructor() {
@@ -16,8 +19,12 @@ namespace UiPluginRiskMatrix {
            return  $("<div  style='margin:10px;' class='panel-body-v-scroll fillHeight' >");
         }
 
-        renderProjectPage() {
+        async renderProjectPage(po?:IRiskCounterPluginPanelOptions) {
 
+            if (po && po.render) {
+                // render the dashboard with predefined settings
+                return await this.renderDashboard( po.render );
+            }
             const control = this.getDashboardDOM();
             app.itemForm.append(
                 ml.UI.getPageTitle(
@@ -38,17 +45,26 @@ namespace UiPluginRiskMatrix {
             console.log("onresize has been triggered... ");
         }
     
+        private async renderDashboard( options:IRiskCounter) {
+            let res = $.Deferred();
+            this.graph = $("<div>");
+            this.createStats(options).done ( () => {
+                res.resolve(this.graph[0].outerHTML);
+            });
+            return res;
+        }
+
         // ask for risk category if there's multiple
         private selectCategory(ui: JQuery) {
             const that = this;
             const riskCats = IC.getCategories(true).filter(category => IC.getFieldsOfType("risk2", category).length != 0);
             const options: IRiskCounter = {
+                pageId:"RISK_STATS",
                 category: riskCats.length == 1 ? riskCats[0] : ""
             };
-
+            console.log("RISK  category");
             ml.UI.addDropdownToValue(ui, "Select Risk Category", options, "category", riskCats.map((cat) => { return { id: cat, label: cat } }), false,
                 false, () => that.createStats(options));
-            this.properties = $("<div>").appendTo(ui);
             this.graph = $("<div style='margin:10px'>").appendTo(ui);
             if (riskCats.length == 1) {
                 this.createStats(options);
@@ -57,9 +73,9 @@ namespace UiPluginRiskMatrix {
 
         // ask for graph configuration
         private createStats(options: IRiskCounter) {
+            let res = $.Deferred();
             const that = this;
 
-            this.properties.html("");
             this.graph.html("");
             // get config
             const field = IC.getFieldsOfType("risk2", options.category)[0].field;
@@ -70,8 +86,9 @@ namespace UiPluginRiskMatrix {
            
             app.searchAsync(`mrql:category=${options.category}`, null, true, "" + field.id).done((risks) => {
                 that.renderStats(options, config, risks);
+                res.resolve();
             });
-
+            return res;
         }
 
         // render risk
@@ -83,8 +100,9 @@ namespace UiPluginRiskMatrix {
             const heading = $("<h2>Risk Distribution Stats</h2>").appendTo(this.graph);
             const canvas = $("<div>").appendTo(this.graph);
             
-
             ml.UI.copyBuffer(heading, "copy to clipboard", canvas, canvas);
+            $(`<div class="hideCopy">${JSON.stringify(options)}</div>`).appendTo(this.graph);
+            
             // build a list of permutations of values not on the axises
             let table = `<table class="table table-bordered">`;
             table += `<thead><tr><th colspan=2></th>`;
