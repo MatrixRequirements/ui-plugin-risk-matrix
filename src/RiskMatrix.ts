@@ -13,19 +13,20 @@ interface IRiskWithCombinations extends IRiskConfig {
 interface IRiskCombination { // one axis of graph as combination of 2 or more other weights
     id:string, // unique id of combination (no spaces/special chars), e.g "p1xp2"
     name:string, // display name, e.g. "p1 x p2"
-    weightIds:string[], // ids of weights to combine, e.g. ["p1", "p2"],
-    combination: IRiskCombinationOptions[] // point in axis with list of combinations to put inside
+    weightIds:string[], // ids/types of weights to combine, e.g. ["p1", "p2"],
+    combinedWeights: IRiskCombinedWeight[] // list of rows/columns to create, e.g. if you have 3 different p1 and 3 p2s, p1xp2 could have 2 rows/columns: low and high
 }
-interface IRiskCombinationOptions { // one axis of graph as combination of 2 or more other weights
+interface IRiskCombinedWeight { // one column or row which combines multiple weights tuples
     id:string, // unique id of option, e.g. low
     name:string, // display name of option e.g. "low probability"
-    options: IStringNumberMap[] // e.g. [{p1:1, p2:2}, {p1:2, p1:1}]
-    colors:IColorMap 
-    text:ITextMap 
+    weightTuples: IStringNumberMap[], // e.g. [{p1:1, p2:1}, {p1:2, p1:1}]
+    colors:IStringStringMap, // defines color to used depending on the other axis, e.g { "severity" : { "1": "green", "2":"red"} } 
+    before:IStringStringMap // defines text to used before risk applying, e.g { "severity" : { "1": "before sev 1 with low probability", "2":"before sev 2 with low probability"} } 
+    after:IStringStringMap // defines text to used before risk applying, e.g { "severity" : { "1": "before sev 1 with low probability", "2":"before sev 2 with low probability"} } 
 }
 
-interface IColorMap { [key:string]: IStringMap}
-interface ITextMap { [key:string]: IColorMap}
+interface IStringStringMap { [key:string]: IStringMap}  
+
 interface IRenderContent {
     html:string,
     riskCount:number
@@ -300,11 +301,11 @@ namespace UiPluginRiskMatrix {
             // header row -> x axis
             canvas.append(otherExplanation);
             let table = `<table class="table table-bordered">`;
-            table += `<thead><tr><th rowspan=2>${resolved.yCombination?resolved.yCombination.name:yAxis.label}</th><th colspan=${resolved.xCombination?resolved.xCombination.combination.length:xAxis.values.length}>${resolved.xCombination?resolved.xCombination.name:xAxis.label}</th></tr><tr>`;
+            table += `<thead><tr><th rowspan=2>${resolved.yCombination?resolved.yCombination.name:yAxis.label}</th><th colspan=${resolved.xCombination?resolved.xCombination.combinedWeights.length:xAxis.values.length}>${resolved.xCombination?resolved.xCombination.name:xAxis.label}</th></tr><tr>`;
             for (const x of xAxis?xAxis.values:[]) {
                 table += `<th>${x.factor} ${x.shortname}</th>`;
             }
-            for (const x of resolved.xCombination?resolved.xCombination.combination:[]) {
+            for (const x of resolved.xCombination?resolved.xCombination.combinedWeights:[]) {
                 table += `<th>${x.name}</th>`;
             }
             table += `</tr></thead>`;
@@ -325,7 +326,7 @@ namespace UiPluginRiskMatrix {
             const tableRows:IRenderContent = { html:"", riskCount:0};
 
             if (yCombination) {
-                for (const y of  yCombination.combination) { 
+                for (const y of  yCombination.combinedWeights) { 
                     tableRows.html += `<tr><td><b>${y.name}</b></td>`;
                     const rowColumns = this.renderColumns( y, undefined, baseRisk, riskCalculator, options, xCombination, xAxis, yAxis, risks, config);
                     tableRows.html += rowColumns.html;
@@ -344,13 +345,13 @@ namespace UiPluginRiskMatrix {
             return tableRows;
         }
         
-        private renderColumns( combinationRow:IRiskCombinationOptions, propertyRow:IRiskConfigFactorWeightValue, baseRisk:IRiskValue, riskCalculator:RiskCalculator, 
+        private renderColumns( combinationRow:IRiskCombinedWeight, propertyRow:IRiskConfigFactorWeightValue, baseRisk:IRiskValue, riskCalculator:RiskCalculator, 
             options: IRiskGraph, xCombination:IRiskCombination, xAxis: IRiskConfigFactorWeight, yAxis:IRiskConfigFactorWeight,  risks:IStringRiskMap, config:IRiskConfig) {
           
             const cell :IRenderContent = { html:"", riskCount:0};
 
             if (xCombination) {
-                for (const x of  xCombination.combination) { 
+                for (const x of  xCombination.combinedWeights) { 
                     const renderCell = this.renderCell( combinationRow, propertyRow, x, undefined,  baseRisk, riskCalculator, options, xAxis, yAxis, risks, config);
                     cell.html += renderCell.html;
                     cell.riskCount += renderCell.riskCount;
@@ -381,18 +382,16 @@ namespace UiPluginRiskMatrix {
             }
             console.log( msg );
         }
-        private renderCell(combinationRow:IRiskCombinationOptions, propertyRow:IRiskConfigFactorWeightValue,combinationColumn:IRiskCombinationOptions, propertyColumn:IRiskConfigFactorWeightValue,baseRisk:IRiskValue, riskCalculator:RiskCalculator,
+        private renderCell(combinationRow:IRiskCombinedWeight, propertyRow:IRiskConfigFactorWeightValue,combinationColumn:IRiskCombinedWeight, propertyColumn:IRiskConfigFactorWeightValue,baseRisk:IRiskValue, riskCalculator:RiskCalculator,
             options: IRiskGraph,   xAxis: IRiskConfigFactorWeight, yAxis:IRiskConfigFactorWeight, risks:IStringRiskMap, config:IRiskConfig) {
             
             // this enumerates all the risks with given combinations of weights -> as a side effect, the baseRisk will updated to match the risk in that cell
             // if there are several dimensions in a cell, the base risk will be the last 'dimension'
             const risksInCell = this.getRiskIdsXY( combinationRow, propertyRow,combinationColumn, propertyColumn, baseRisk, riskCalculator, options,   xAxis, yAxis, risks, config);
             
-
             let text = "";
             
             this.logRiskFilter( "Last Base Risk", baseRisk, config);
-
 
             riskCalculator.init(baseRisk);
             let color =  riskCalculator.getAttributeHTML("colorbeforebackground"); // random if one column is a combination of weights
@@ -409,11 +408,11 @@ namespace UiPluginRiskMatrix {
             if ( options.displayOptions == "text" ) {
                 let total = $(riskCalculator.getAttributeHTML(options.ba=="before"?"totalrbm":"totalram")).text(); // random if one column is a combination of weights
                 
-                if ( combinationColumn && combinationColumn.text && combinationColumn.text[options.ba] && yAxis && yAxis.type && propertyRow && propertyRow.factor && combinationColumn.text[options.ba][ yAxis.type ] ) {
-                    total = combinationColumn.text[options.ba][ yAxis.type ][propertyRow.factor]
+                if ( combinationColumn && combinationColumn[options.ba] && yAxis && yAxis.type && propertyRow && propertyRow.factor && combinationColumn[options.ba][ yAxis.type ] && combinationColumn[options.ba][ yAxis.type ][propertyRow.factor]) {
+                    total = combinationColumn[options.ba][ yAxis.type ][propertyRow.factor];
                 }
-                if ( combinationRow && combinationRow.text && combinationRow.text[options.ba] && xAxis && xAxis.type && propertyColumn && propertyColumn.factor && combinationRow.text[options.ba][ xAxis.type ] ) {
-                    total = combinationRow.text[options.ba][ xAxis.type ][propertyColumn.factor]
+                if ( combinationRow && combinationRow[options.ba] && xAxis && xAxis.type && propertyColumn && propertyColumn.factor && combinationRow[options.ba][ xAxis.type ] && combinationRow[options.ba][ xAxis.type ][propertyColumn.factor]) {
+                    total = combinationRow[options.ba][ xAxis.type ][propertyColumn.factor];
                 }
 
                 text += total;
@@ -434,14 +433,14 @@ namespace UiPluginRiskMatrix {
             return { html:`<td style="background-color:${color}">${text}</ts>`, riskCount:risksInCell.length };
         }  
 
-        private getRiskIdsXY(combinationRow:IRiskCombinationOptions, propertyRow:IRiskConfigFactorWeightValue,combinationColumn:IRiskCombinationOptions, propertyColumn:IRiskConfigFactorWeightValue,baseRisk:IRiskValue, riskCalculator:RiskCalculator,
+        private getRiskIdsXY(combinationRow:IRiskCombinedWeight, propertyRow:IRiskConfigFactorWeightValue,combinationColumn:IRiskCombinedWeight, propertyColumn:IRiskConfigFactorWeightValue,baseRisk:IRiskValue, riskCalculator:RiskCalculator,
             options: IRiskGraph,   xAxis: IRiskConfigFactorWeight, yAxis:IRiskConfigFactorWeight, risks:IStringRiskMap, config:IRiskConfig) {
             
             let riskIds = [];
 
             // define what should be counted for this cell
             if (combinationRow) {
-                for (const row of combinationRow.options) {
+                for (const row of combinationRow.weightTuples) {
                     for (const opt of Object.keys( row)) {
                         this.setDummyRisk(baseRisk, opt, row[opt]);
                     }
@@ -455,14 +454,14 @@ namespace UiPluginRiskMatrix {
             return riskIds;
         }
 
-        private getRiskIdsX( combinationColumn:IRiskCombinationOptions, propertyColumn:IRiskConfigFactorWeightValue,baseRisk:IRiskValue, riskCalculator:RiskCalculator,
+        private getRiskIdsX( combinationColumn:IRiskCombinedWeight, propertyColumn:IRiskConfigFactorWeightValue,baseRisk:IRiskValue, riskCalculator:RiskCalculator,
             options: IRiskGraph,   xAxis: IRiskConfigFactorWeight,  risks:IStringRiskMap, config:IRiskConfig) {
             
             let riskIds = [];
 
             // define what should be counted for this cell
             if (combinationColumn) {
-                for (const col of combinationColumn.options) {
+                for (const col of combinationColumn.weightTuples) {
                     for (const opt of Object.keys( col )) {
                         this.setDummyRisk(baseRisk, opt, col[opt]);
                     }
